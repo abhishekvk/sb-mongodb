@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Abhishek Kumar V K and/or its affiliates. All rights reserved
+ * Copyright (c) 2026 Abhishek Kumar V K and/or affiliates. All rights reserved
  */
 package net.akvk.demo.service;
 
@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +30,10 @@ import org.springframework.data.domain.PageRequest;
 class EmployeeServiceTest {
 
     private static final String TEST_EMP_ID_1 = "test-emp-id-1";
+    private static final String TEST_EMP_NAME_1 = "test-emp-name-1";
+    private static final String TEST_EMP_DESIGNATION_1 = "test-emp-desingation-1";
+    private static final LocalDate TEST_EMP_DOJ_1 = LocalDate.now();
+    private static final LocalDate TEST_EMP_DOB_1 = LocalDate.of(2000, 04, 24);
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -58,6 +63,26 @@ class EmployeeServiceTest {
     void testGetEmployeeByIdNotFound() {
         when(employeeRepository.findById(TEST_EMP_ID_1)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> employeeService.getEmployee(TEST_EMP_ID_1));
+    }
+
+    @Test
+    void testCreateEmployee() {
+        Employee employee = Employee.builder()
+                        .id(TEST_EMP_ID_1)
+                        .name(TEST_EMP_NAME_1)
+                        .designation(TEST_EMP_DESIGNATION_1)
+                        .dateOfBirth(TEST_EMP_DOB_1)
+                        .dateOfJoining(TEST_EMP_DOJ_1)
+                        .build();
+
+        when(employeeRepository.insert(any(Employee.class))).thenAnswer(invocationOnMock -> {
+            Employee emp = invocationOnMock.getArgument(0);
+            emp.setId(TEST_EMP_ID_1);
+            return emp;
+        });
+
+        Employee emp = employeeService.createEmployee(employee);
+        assertEquals(TEST_EMP_ID_1, emp.getId());
     }
 
     Page<Employee> getEmployeesPage() {

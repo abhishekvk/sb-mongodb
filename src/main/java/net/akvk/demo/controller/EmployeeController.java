@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2026 Abhishek Kumar V K and/or its affiliates. All rights reserved
+ * Copyright (c) 2026 Abhishek Kumar V K and/or affiliates. All rights reserved
  */
-
 package net.akvk.demo.controller;
 
 import jakarta.validation.Valid;

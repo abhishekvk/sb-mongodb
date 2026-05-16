@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Abhishek Kumar V K and/or its affiliates. All rights reserved
+ * Copyright (c) 2026 Abhishek Kumar V K and/or affiliates. All rights reserved
  */
 package net.akvk.demo.repository;
 
@@ -47,6 +47,22 @@ class CustomEmployeeRepositoryTest {
     @Test
     void testGetEmployeesWithFilter() {
         Map<String, String> filters = Map.of("page", "0", "size", "5", "dateOfJoining", "2024-01-02T00:00:00", "name", "test");
+        when(mongoTemplate.find(any(), any())).thenReturn(List.of(getEmployee(TEST_EMP_ID_1)));
+        Page<Employee> employees = customEmployeeRepository.findEmployees(filters);
+        assertEquals(1, employees.getNumberOfElements());
+    }
+
+    @Test
+    void testGetEmployeesWithGenericQuery() {
+        Map<String, String> filters = Map.of("query", "test");
+        when(mongoTemplate.find(any(), any())).thenReturn(List.of(getEmployee(TEST_EMP_ID_1)));
+        Page<Employee> employees = customEmployeeRepository.findEmployees(filters);
+        assertEquals(1, employees.getNumberOfElements());
+    }
+
+    @Test
+    void testGetEmployeesWithBegEndFilter() {
+        Map<String, String> filters = Map.of("beg_dateOfJoining", "2024-01-01T00:00:01", "end_dateOfJoining", "2025-12-31T23:59:59");
         when(mongoTemplate.find(any(), any())).thenReturn(List.of(getEmployee(TEST_EMP_ID_1)));
         Page<Employee> employees = customEmployeeRepository.findEmployees(filters);
         assertEquals(1, employees.getNumberOfElements());
